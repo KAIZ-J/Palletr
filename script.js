@@ -107,6 +107,9 @@ const dialogBtn = document.getElementById("dialog-btn")
           elem.setAttribute("disabled", true);
           const response = await fetch(`https://colormind-proxy.onrender.com/colormind`, {
             method: "POST",
+            headers: {
+    'Content-Type': 'application/json',
+  },
             body: JSON.stringify({
         model: `${randomModel()}`,
         input: ["N", "N", "N", "N", "N"],
@@ -133,6 +136,9 @@ const dialogBtn = document.getElementById("dialog-btn")
        try {
           const response = await fetch(`https://colormind-proxy.onrender.com/colormind`, {
             method: "POST",
+            headers: {
+    'Content-Type': 'application/json',
+  },
             body: JSON.stringify({
         model: `${randomModel()}`,
         input: ["N", "N", "N", "N", "N"],
@@ -161,6 +167,9 @@ const dialogBtn = document.getElementById("dialog-btn")
           dialogBtn.setAttribute("disabled", true);
           const response = await fetch(`https://colormind-proxy.onrender.com/colormind`, {
             method: "POST",
+            headers: {
+    'Content-Type': 'application/json',
+  },
             body: JSON.stringify({ 
         model: `${model.value}`,
         input: [hex(baseColor.value), "N", "N", "N", "N"],
