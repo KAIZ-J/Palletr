@@ -105,7 +105,7 @@ const dialogBtn = document.getElementById("dialog-btn")
         try {
           elem.querySelector("i").classList.add("fa-spin");
           elem.setAttribute("disabled", true);
-          const response = await fetch(`http://colormind.io/api/`, {
+          const response = await fetch(`https://colormind.io/api/`, {
             method: "POST",
             body: JSON.stringify({
         model: `${randomModel()}`,
@@ -131,7 +131,7 @@ const dialogBtn = document.getElementById("dialog-btn")
           elem.setAttribute("disabled", true);
       for(let i=0;i<10;i++){   
        try {
-          const response = await fetch(`http://colormind.io/api/`, {
+          const response = await fetch(`https://colormind.io/api/`, {
             method: "POST",
             body: JSON.stringify({
         model: `${randomModel()}`,
@@ -159,7 +159,7 @@ const dialogBtn = document.getElementById("dialog-btn")
  try {
          dialogBtn.innerHTML=`<i class="fa-solid fa-spinner fa-spin" style="color:var(--background)"></i>`;
           dialogBtn.setAttribute("disabled", true);
-          const response = await fetch(`http://colormind.io/api/`, {
+          const response = await fetch(`https://colormind.io/api/`, {
             method: "POST",
             body: JSON.stringify({ 
         model: `${model.value}`,
