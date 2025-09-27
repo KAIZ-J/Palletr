@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A completely free color palette generator made for designers and developers!">
+    <script
+      src="https://kit.fontawesome.com/9603c04a31.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+<link rel="manifest" href="/assets/site.webmanifest">
+    <title>palettr</title>
+<link rel="stylesheet" href="style.css">
+  </head>
+  <body class="light">
+    <div id="dialog-outer">
+    <div id="dialog">
+    <h2 class="subheading" style="font-size: 1.25rem;">Customize Your Pallete</h2>
+    <div id="model-div">
+      <label for="model">Model</label>
+      <select id="model">
+        <option value="default">Default</option>
+        <option value="ui">UI</option>
+      </select>
+    </div>
+    <div id="bcol-div">
+      <label for="base-color">Base color</label>
+      <input type="color" id="base-color" value="#145d98">
+    </div>
+    <button type="button" onclick="closeDialog()" id="close-dialog"><i class="fa-solid fa-close"></i></button>
+    <button
+          type="button"
+          id="create-btn"
+          onclick="createPalette()"
+        >
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Create
+        </button>
+    </div>
+ </div>
+    <nav>
+      <div>
+        <img
+          src="/assets/logo.png"
+          alt="palettr"
+        />
+      </div>
+      <div id="nav-links">
+        <a href="#hero">Home</a>
+        <a href="#about-page">About us</a> 
+        <button id="theme-toggle" onclick="toggleTheme(this)"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </nav>
+    <div id="sections">
+      <section id="hero" class="section">
+        <div id="heading">
+          <img
+            src="/assets/icon.png"
+            alt="p"
+          />
+          <h1>palettr</h1>
+        </div>
+        <h2><i>"Colors, Carved for you"</i></h2>
+        <div id="action-btns">
+          <a href="#random-page"
+            ><i class="fa-solid fa-repeat"></i> Quick palette</a
+          >
+          <a href="#create-page"
+            ><i class="fa-solid fa-wand-magic-sparkles"></i> Create palette</a
+          >
+          <a href="#explore-page"><i class="fa-solid fa-search"></i> Explore palettes</a>
+        </div>
+      </section>
+      <section id="random-page" class="section">
+        <h1 class="subheading">Generate a quick pallete</h1>
+        <div id="quickPalette" class="palette"></div>
+        <button
+          type="button"
+          id="generate-random-btn"
+          onclick="getQuickPallete(this)"
+        >
+          <i class="fa-solid fa-rotate"></i> Generate
+        </button>
+      </section>
+      <section id="create-page" class="section">
+        <h1 class="subheading">Create your own customized pallete✨</h1>
+        <div id="createdPalette" class="palette">
+          <p style="text-align: center;
+            align-self: center;
+            width: 100%;">You haven't created any pallete yet</p>
+        </div>
+        <button
+          type="button"
+          id="dialog-btn"
+          onclick="openDialog()"
+        >
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Create
+        </button>
+      </section>
+      <section id="explore-page" class="section">
+         <h1 class="subheading">Explore Palletes</h1>
+         <div id="palletes-holder"></div>
+         <button 
+         type="button"
+          id="load-more-btn"
+          onclick="loadExpPalletes(this)">Load more...</button>
+      </section>
+      <section id="about-page">
+                 <h1 class="subheading">About us</h1>
+                 <p style="font-family: chillax;">palletr helps developers and designers achieve a better consistency and time efficiency by providing perfectly made color palletes.</p>
+      </section>
+    </div>
+    <footer>
+      <div><img src="/assets/logo.png" alt="palettr"></div>
+      <div id="footer-links">
+        <i class="fa-brands fa-github"></i>
+         <i class="fa-solid fa-envelope"></i>
+          <i class="fa-brands fa-facebook"></i>
+          <i class="fa-brands fa-twitter"></i>
+      </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.dots.min.js"></script>
+    <script>
+      VANTA.DOTS({
+        el: "#hero",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.0,
+        minWidth: 200.0,
+        scale: 1.0,
+        scaleMobile: 1.0,
+        color: 0x207fff,
+        color2: 0x2099ff,
+        showLines: false,
+      });
+    </script>
+    <script src="script.js"> </script>
+  </body>
+</html>
