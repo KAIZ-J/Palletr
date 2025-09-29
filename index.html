@@ -41,28 +41,31 @@
     </div>
  </div>
     <nav>
-      <div>
+      <div id="logo-div"> 
         <img
-          src="/assets/logo.png"
+          src="/assets/icon.png"
           alt="palettr"
         />
       </div>
       <div id="nav-links">
-        <a href="#hero">Home</a>
-        <a href="#about-page">About us</a> 
-        <button id="theme-toggle" onclick="toggleTheme(this)"><i class="fa-solid fa-moon"></i></button>
+        <a href="#hero" class="nav-link active" onclick="goPage(this)"><i class="fa-solid fa-house"></i></a>
+       
+        <a href="#create-page" class="nav-link" onclick="goPage(this)"><i class="fa-solid fa-plus"></i></a>
+        <a href="#random-page" class="nav-link" onclick="goPage(this)"><i class="fa-solid fa-rotate"></i></a> 
+         <a href="#explore-page" class="nav-link" onclick="goPage(this)"><i class="fa-solid fa-compass"></i></a> 
       </div>
+      <div id="nav-btns">
+ <button id="theme-toggle" onclick="toggleTheme(this)"><i class="fa-solid fa-moon"></i></button>
+      </div>
+      <!-- <button id="exp-col-btn" onclick="changeNav()"><i class="fa-solid fa-chevron-left"></i></button> -->
     </nav>
     <div id="sections">
       <section id="hero" class="section">
         <div id="heading">
-          <img
-            src="/assets/icon.png"
-            alt="p"
-          />
-          <h1>palettr</h1>
+         <h1>Palettr</h1> 
+          <h2><i>"Colors, Carved for you"</i></h2> 
         </div>
-        <h2><i>"Colors, Carved for you"</i></h2>
+       
         <div id="action-btns">
           <a href="#random-page"
             ><i class="fa-solid fa-repeat"></i> Quick palette</a
@@ -85,7 +88,6 @@
         </button>
       </section>
       <section id="create-page" class="section">
-        <h1 class="subheading">Create your own customized pallete✨</h1>
         <div id="createdPalette" class="palette">
           <p style="text-align: center;
             align-self: center;
@@ -107,12 +109,12 @@
           id="load-more-btn"
           onclick="loadExpPalletes(this)">Load more...</button>
       </section>
-      <section id="about-page">
+      <section id="about-page" class="section">
                  <h1 class="subheading">About us</h1>
                  <p style="font-family: chillax;">palletr helps developers and designers achieve a better consistency and time efficiency by providing perfectly made color palletes.</p>
       </section>
     </div>
-    <footer>
+    <!-- <footer>
       <div><img src="/assets/logo.png" alt="palettr"></div>
       <div id="footer-links">
         <i class="fa-brands fa-github"></i>
@@ -120,7 +122,7 @@
           <i class="fa-brands fa-facebook"></i>
           <i class="fa-brands fa-twitter"></i>
       </div>
-    </footer>
+    </footer> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.dots.min.js"></script>
     <script>

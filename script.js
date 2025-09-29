@@ -11,14 +11,14 @@
         setTimeout(()=>{
 document.getElementById("dialog").classList.add("active");
         },100)    
-        document.body.style.overflowY="hidden"
+       
     }
      function closeDialog(){
         document.getElementById("dialog").classList.remove("active");
         setTimeout(()=>{
              document.getElementById("dialog-outer").style.display="none";
         },100)
-        document.body.style.overflowY="auto"
+        
       }
 const palletesHolder = document.getElementById("palletes-holder");
 const modelSelect =  document.getElementById("model");
@@ -184,3 +184,12 @@ const dialogBtn = document.getElementById("dialog-btn")
           console.log("cound't fecth", err);
         }
     }
+    function goPage(elem){
+      document.querySelectorAll(".nav-link").forEach(el=>el.classList.remove("active"));
+      elem.classList.add("active")
+    }
+    // const nav =  document.querySelector("nav")
+    // function changeNav(){
+    //   nav.style.width="0";
+    //   nav.style.zIndex="-5"
+    // }
