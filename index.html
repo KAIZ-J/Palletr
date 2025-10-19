@@ -3,535 +3,590 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="Palettr — premium color palette generator for designers & devs" />
-  <title>Palettr — Premium Redesign</title>
+  <title>Palettr — Premium Rebuild</title>
+  <meta name="description" content="Palettr — premium color palettes (rebuild)">
 
-  <!-- Font Awesome kept -->
+  <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/9603c04a31.js" crossorigin="anonymous"></script>
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Small font fallback (optional) -->
   <style>
-    @font-face {
-      font-family: 'Chillax';
-      src: local('Chillax'), local('Arial');
-    }
+    /* ----------------- Theme tokens (muted, professional) ----------------- */
+   body { overflow-x:hidden; transition: background 0.26s, color 0.26s; }
     :root{
-      --bg-dark: #071018;
-      --panel-dark: rgba(255,255,255,0.03);
-      --fg-dark: #e7f0f8;
-      --accent: #20a7ff;
-      --glass-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      --bg: #0a0a0a;
+      --panel: rgba(255,255,255,0.02);
+      --fg: #e5e5e5;
+      --muted: rgba(255,255,255,0.05);
+      --accent: #4f7388;
+      --glass-shadow: 0 12px 36px rgba(0,0,0,0.5);
+      --control-bg: rgba(255,255,255,0.03);
+      --pill: rgba(255,255,255,0.02);
     }
-    body.light {
-      --bg-dark: #f6fbff; /* background variable reused for light */
-      --panel-dark: rgba(2,6,23,0.03);
-      --fg-dark: #07202a;
-      --accent: #0f61a8;
-      --glass-shadow: 0 10px 30px rgba(11,18,28,0.08);
-    }
+    body.light{
+      --bg:#fdfdfd;
+      --panel: rgba(0,0,0,0.03);
+      --fg:#0a0a0a;
+      --muted: rgba(0,0,0,0.05);
+      --accent:#4f7388;
+      --glass-shadow:0 10px 28px rgba(0,0,0,0.06);
+      --control-bg: rgba(0,0,0,0.03);
+      --pill: rgba(0,0,0,0.02);
+    } 
+
     html,body { height:100%; }
-    body {
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: radial-gradient(600px 200px at 8% 12%, rgba(32,167,255,0.04), transparent 6%), radial-gradient(600px 200px at 92% 88%, rgba(142,191,231,0.02), transparent 12%), var(--bg-dark);
-      color: var(--fg-dark);
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      transition: background .28s ease, color .28s ease;
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(900px 300px at 8% 12%, rgba(106,160,191,0.02), transparent 6%),
+        var(--bg);
+      color:var(--fg);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      transition: background .26s ease, color .26s ease;
     }
 
-    /* Glass card base */
+    /* Glass card */
     .glass {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.04);
-      backdrop-filter: blur(8px) saturate(.98);
-      -webkit-backdrop-filter: blur(8px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      border: 1px solid var(--muted);
+      border-radius: 12px;
+      backdrop-filter: blur(6px) saturate(.98);
+      -webkit-backdrop-filter: blur(6px);
       box-shadow: var(--glass-shadow);
     }
 
-    /* Brand heading */
-    .brand-title { letter-spacing: 2px; font-weight:800; }
-
-    /* Rounded tile swatches */
-    .tile {
-      border-radius: 12px;
-      transition: transform .14s cubic-bezier(.2,.9,.3,1), box-shadow .18s ease;
-      position: relative;
-      overflow: visible;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-      min-height: 64px;
-      min-width: 64px;
-      user-select: none;
-    }
-    .tile:focus { outline: 3px solid rgba(32,167,255,0.16); outline-offset: 4px; }
-
-    /* Hover/magnetic effect */
-    .tile:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 14px 40px rgba(2,6,23,0.4); }
-
-    /* overlay that reveals hex and actions */
-    .tile-overlay {
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:flex-end;
-      justify-content:center;
-      padding:10px;
-      background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.28));
-      opacity:0;
-      transform: translateY(6px);
-      transition: all .18s ease;
-      border-radius:12px;
-      pointer-events:none;
-      color: white;
-    }
-    .tile:hover .tile-overlay, .tile:focus .tile-overlay {
-      opacity:1;
-      transform: translateY(0);
-      pointer-events:auto;
-    }
-
-    /* small hex pill */
-    .hex-pill {
-      background: rgba(0,0,0,0.34);
-      padding:6px 10px;
-      border-radius:999px;
-      font-weight:600;
-      font-size:0.78rem;
-      letter-spacing: .6px;
-      box-shadow: 0 4px 16px rgba(2,6,23,0.4);
-    }
-
-    /* copy icon button */
-    .copy-btn {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.06);
-      padding:6px 8px;
-      border-radius:8px;
-      margin-left:8px;
-      display:inline-flex; align-items:center;
-    }
-    .copy-btn:active { transform: scale(.98); }
-
-    /* palette card look */
-    .palette-card {
-      border-radius:14px;
-      overflow:hidden;
-      border: 1px solid rgba(255,255,255,0.04);
+    /* ---------- fixed left rail ---------- */
+    aside.left-rail {
+      position: fixed;
+      left: 20px;
+      top: 22px;
+      bottom: 22px;
+      width: 84px;
       display:flex;
       flex-direction:column;
-      gap:12px;
-      padding:12px;
+      align-items:center;
+      gap:14px;
+      padding:14px;
+      z-index:70;
     }
+    @media(min-width:1024px){
+      aside.left-rail { width:240px; align-items:flex-start; padding:18px; border-radius:14px; }
+      aside.left-rail .label { display:inline-block; margin-left:10px; font-weight:700; color:var(--fg); }
+    }
+    @media(max-width:1023px){
+      aside.left-rail { display:none; } /* replace with mobile nav */
+    }
+
+    .nav-item { width:100%; display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; color:var(--fg); background:transparent; transition: all .14s ease; text-align:left; }
+    .nav-item:hover { background: var(--pill); }
+    .nav-item.active { background: linear-gradient(90deg,var(--accent), rgba(80,130,150,0.14)); color:white; box-shadow: 0 8px 30px rgba(6,18,28,0.28); }
+
+    .icon-wrap { width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center; border-radius:9px; background:var(--control-bg); }
+
+    /* -------- mobile bottom nav -------- */
+    .mobile-bottom { display:none; }
+    @media(max-width:1023px){
+      .mobile-bottom { display:flex; position:fixed; bottom:14px; left:50%; transform:translateX(-50%); gap:8px; padding:8px 12px; border-radius:999px; z-index:80; background:var(--panel); backdrop-filter: blur(6px); box-shadow: 0 10px 30px rgba(6,12,18,0.4); }
+    }
+
+    /* ----- content spacing for fixed rail ----- */
+    main.content { margin-left: 20px; padding:18px; }
+    @media(min-width:1024px){ main.content { margin-left: 280px; padding:28px; } }
+
+    /* ---------- showcase (stable panels) ---------- */
+    .showcase-wrap { overflow:hidden; border-radius:12px; }
+    .showcase-track { display:flex; gap:12px; align-items:stretch; height:80px; position:relative; }
+    .panel { display:flex; gap:12px; min-width:100%; align-items:stretch; transition: transform .6s cubic-bezier(.22,.9,.3,1), opacity .4s ease; }
+    .swatch { flex:1 1 0%; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; color:rgba(255,255,255,0.88); min-height:72px; }
+
+    /* ---------- explore cards ---------- */
+    .palette-card { border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; border:1px solid var(--muted); background: linear-gradient(180deg, rgba(255,255,255,0.007), rgba(255,255,255,0.003)); }
+    .card-swatches { display:flex; gap:8px; align-items:stretch; }
+
+    /* tile overlay (explore) */
+    .tile { position:relative; border-radius:10px; min-height:60px; display:flex; align-items:center; justify-content:center; overflow:visible; }
+   
+    /* ---- compact control styles ---- */
+    .btn-compact { padding:8px 10px; border-radius:8px; font-weight:700; font-size:0.9rem; display:inline-flex; gap:8px; align-items:center; justify-content:center; white-space:nowrap; }
+    .btn-compact:disabled { opacity:.6; }
 
     /* toast */
-    #toast {
-      position: fixed; left:50%; transform:translateX(-50%); bottom:28px; z-index:60; display:none;
-    }
-    #toast .bubble {
-      background: linear-gradient(90deg,var(--accent), rgba(20,110,160,0.95));
-      color: white;
-      padding: 10px 14px;
-      border-radius: 999px;
-      box-shadow: 0 12px 36px rgba(2,6,23,0.48);
-      font-weight:700;
-    }
+    #toast { position:fixed; left:50%; transform:translateX(-50%); bottom:22px; z-index:90; display:none; }
+    #toast .bubble { padding:8px 12px; border-radius:999px; background:linear-gradient(90deg,var(--accent), rgba(50,90,110,0.95)); color:white; font-weight:700; box-shadow: 0 10px 30px rgba(6,12,18,0.45); }
 
-    /* responsive tweaks */
-    @media (max-width:880px){
-      .left-rail { display:flex; gap:8px; align-items:center; justify-center: center; position:fixed; bottom:14px; left:50%; transform:translateX(-50%); z-index:60; background:transparent; }
-    }
+    /* keep consistent card heights */
+    .equal-h { display:flex; flex-direction:column; }
+    .equal-h > .body { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .equal-h .footer { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
+
+    /* ensure no button overflow on small screens */
+    .no-wrap { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   </style>
 </head>
 <body class="antialiased">
 
-  <!-- App container -->
-  <div class="min-h-screen flex flex-col md:flex-row">
+  <!-- Left rail (desktop; fixed). On mobile it's hidden -->
+  <aside class="left-rail glass" aria-hidden="false">
+    <img src="/assets/icon.png" alt="palettr" class="w-12 h-12 rounded-lg object-contain" />
+    <nav class="mt-3 w-full space-y-2" aria-label="Main">
+      <button class="nav-item active" data-href="#hero" onclick="navClick(this)"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></button>
+      <button class="nav-item" data-href="#create-page" onclick="navClick(this)"><span class="icon-wrap"><i class="fa-solid fa-plus"></i></span><span class="label">Create</span></button>
+      <button class="nav-item" data-href="#random-page" onclick="navClick(this)"><span class="icon-wrap"><i class="fa-solid fa-rotate"></i></span><span class="label">Quick</span></button>
+      <button class="nav-item" data-href="#explore-page" onclick="navClick(this)"><span class="icon-wrap"><i class="fa-solid fa-compass"></i></span><span class="label">Explore</span></button>
+    </nav>
+    <div class="mt-auto w-full">
+      <button class="nav-item" onclick="toggleTheme(this)"><span class="icon-wrap"><i class="fa-solid fa-moon"></i></span><span class="label">Theme</span></button>
+    </div>
+  </aside>
 
-    <!-- Left rail (brand + nav) -->
-    <aside class="w-full md:w-28 p-4 md:p-6 flex md:flex-col items-center gap-6 glass left-rail">
-      <div class="flex items-center gap-3 md:flex-col">
-        <img src="/assets/icon.png" alt="palettr" class="w-12 h-12 md:w-14 md:h-14 rounded-lg object-contain" />
-        <div class="hidden md:block">
-          <div class="brand-title text-lg">Palettr</div>
-          <div class="text-xs text-[color:var(--fg-dark)]/70">Colors crafted</div>
-        </div>
-      </div>
-
-      <nav class="flex md:flex-col gap-3 md:mt-6">
-        <a class="nav-link p-3 rounded-lg glass flex items-center justify-center active" href="#hero" onclick="goPage(this)" aria-label="home"><i class="fa-solid fa-house"></i></a>
-        <a class="nav-link p-3 rounded-lg glass flex items-center justify-center" href="#create-page" onclick="goPage(this)" aria-label="create"><i class="fa-solid fa-plus"></i></a>
-        <a class="nav-link p-3 rounded-lg glass flex items-center justify-center" href="#random-page" onclick="goPage(this)" aria-label="quick"><i class="fa-solid fa-rotate"></i></a>
-        <a class="nav-link p-3 rounded-lg glass flex items-center justify-center" href="#explore-page" onclick="goPage(this)" aria-label="explore"><i class="fa-solid fa-compass"></i></a>
-      </nav>
-
-      <div class="mt-auto">
-        <button id="theme-toggle" class="w-10 h-10 rounded-md glass flex items-center justify-center" aria-label="toggle theme" onclick="toggleTheme(this)"><i class="fa-solid fa-moon"></i></button>
-      </div>
-    </aside>
-
-    <!-- Main content -->
-    <main class="flex-1 p-6 md:p-10 space-y-8">
-
-      <!-- HERO -->
-      <section id="hero" class="glass rounded-2xl p-8 md:p-12 flex flex-col md:flex-row gap-6 items-center justify-between relative overflow-hidden">
-        <!-- Vanta anchor -->
-        <div id="vanta-anchor" class="absolute inset-0 opacity-30 pointer-events-none"></div>
-
-        <div class="z-10 max-w-xl">
-          <h1 class="text-3xl md:text-4xl font-extrabold brand-title">Palettr</h1>
-          <p class="mt-2 text-sm text-[color:var(--fg-dark)]/85 max-w-lg">Premium palettes for designers and devs. Rounded tiles, readable color suggestions, and exports — built to ship themes confidently.</p>
-
-          <div class="mt-6 flex gap-3 flex-wrap">
-            <button onclick="getQuickPallete(document.getElementById('generate-random-btn'))" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[color:var(--accent)] text-white hover:scale-[1.02]">
-              <i class="fa-solid fa-rotate"></i> Quick palette
-            </button>
-            <a href="#create-page" class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass">Create</a>
-            <a href="#explore-page" class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass">Explore</a>
-          </div>
-        </div>
-
-        <!-- Hero sample (swatches) -->
-        <div class="z-10 w-full md:w-96">
-          <div class="palette-card h-36 p-3 flex items-center">
-            <div id="quickPalette" class="flex gap-3 w-full h-full"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- QUICK GENERATE -->
-      <section id="random-page" class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Generate a quick palette</h2>
-          <div>
-            <button id="generate-random-btn" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[color:var(--fg-dark)] text-[color:var(--bg-dark)]" onclick="getQuickPallete(this)">
-              <i class="fa-solid fa-rotate"></i> Generate
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-          <div class="col-span-2 palette-card p-3 h-44">
-            <div id="quickPaletteLarge" class="flex gap-3 w-full h-full items-stretch"></div>
-          </div>
-
-          <div class="glass p-4 rounded-xl h-44 flex flex-col justify-between">
-            <p class="text-sm">Tip: tiles reveal hex on hover/tap. Copy a color with a click or keyboard (Enter).</p>
-            <div class="flex gap-2">
-              <button class="px-3 py-2 rounded-md bg-[color:var(--fg-dark)] text-[color:var(--bg-dark)]" onclick="downloadPaletteAsJSON()">Export JSON</button>
-              <button class="px-3 py-2 rounded-md glass" onclick="downloadPaletteAsASE()">Export ASE</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CREATE -->
-      <section id="create-page" class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Create a custom palette</h2>
-          <div class="flex items-center gap-3">
-            <label class="text-sm">Model</label>
-            <select id="model" class="rounded-md p-2 border border-[color:var(--panel-dark)]">
-              <option value="default">Default</option>
-              <option value="ui">UI</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="glass p-4 rounded-xl">
-            <label class="text-sm block mb-2">Base color</label>
-            <input id="base-color" type="color" value="#145d98" class="w-24 h-12 rounded-md border-none" />
-            <p class="mt-3 text-sm text-[color:var(--fg-dark)]/80">Choose a base color — the model will produce a cohesive palette optimized for readability.</p>
-            <div class="mt-4">
-              <button id="dialog-btn" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[color:var(--fg-dark)] text-[color:var(--bg-dark)]" onclick="createPalette()">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Create
-              </button>
-            </div>
-          </div>
-
-          <div class="col-span-2 palette-card p-3 rounded-xl h-44 flex items-center justify-center" id="createdPalette">
-            <p class="text-sm text-[color:var(--fg-dark)]/80">You haven't created any palette yet</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- EXPLORE -->
-      <section id="explore-page" class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Explore palettes</h2>
-          <div><button id="load-more-btn" class="px-4 py-2 rounded-md bg-[color:var(--fg-dark)] text-[color:var(--bg-dark)]" onclick="loadExpPalletes(this)">Generate set</button></div>
-        </div>
-
-        <div id="palletes-holder" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto"></div>
-      </section>
-
-      <!-- ABOUT -->
-      <section id="about-page" class="pt-4 pb-10">
-        <h2 class="text-lg font-semibold">About Palettr</h2>
-        <p class="mt-2 text-sm text-[color:var(--fg-dark)]/85 max-w-2xl">Palettr helps designers and developers produce readable, production-ready color palettes fast. Tiles show color hex and allow quick copying/exporting for workflows.</p>
-      </section>
-
-    </main>
+  <!-- Mobile bottom navigation (icons only) -->
+  <div class="mobile-bottom glass hidden" role="navigation" aria-label="Mobile">
+    <button aria-label="home" onclick="mobileNav('#hero')"><i class="fa-solid fa-house"></i></button>
+    <button aria-label="create" onclick="mobileNav('#create-page')"><i class="fa-solid fa-plus"></i></button>
+    <button aria-label="quick" onclick="mobileNav('#random-page')"><i class="fa-solid fa-rotate"></i></button>
+    <button aria-label="explore" onclick="mobileNav('#explore-page')"><i class="fa-solid fa-compass"></i></button>
+    <button aria-label="theme" onclick="toggleTheme(this)"><i class="fa-solid fa-moon"></i></button>
   </div>
 
-  <!-- toast -->
+  <!-- Main content -->
+  <main class="content min-h-screen">
+    <!-- HERO -->
+    <section id="hero" class="glass p-5 md:p-8 rounded-xl mb-6">
+      <div class="md:flex md:items-center md:gap-8">
+        <div class="flex-1">
+          <h1 class="text-2xl md:text-3xl font-extrabold">Palettr</h1>
+          <p class="mt-2 text-sm text-[color:var(--fg)]/86 max-w-xl">Professional, muted palettes optimized for readability. The showcase rotates every 5 seconds — no clicks required.</p>
+
+          <div class="mt-4 flex flex-wrap gap-3">
+            <button class="btn-compact bg-[color:var(--accent)] text-white no-wrap" onclick="getQuickPallete(document.getElementById('generate-random-btn'))"><i class="fa-solid fa-rotate"></i> Quick</button>
+            <button class="btn-compact glass no-wrap" onclick="scrollTo('#create-page')">Create</button>
+            <button class="btn-compact glass no-wrap" onclick="scrollTo('#explore-page')">Explore</button>
+          </div>
+        </div>
+
+        <!-- Showcase -->
+        <div class="w-full md:w-96 mt-4 md:mt-0">
+          <div class="showcase-wrap glass p-3">
+            <div id="showcase-track" class="showcase-track"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CREATE -->
+    <section id="create-page" class="mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass p-6 md:p-8 rounded-xl space-y-4">
+  <!-- Base color -->
+  <div>
+    <label class="block text-xs text-[color:var(--fg)]/70 mb-1">Base color</label>
+    <input 
+      id="base-color" 
+      type="color" 
+      value="#2b6b7a" 
+      class="w-28 h-12 rounded-lg border border-[color:var(--muted)] p-1 cursor-pointer transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]"
+    />
+  </div>
+
+  <!-- Model select -->
+  <div>
+    <label class="block text-xs text-[color:var(--fg)]/70 mb-1">Model</label>
+    <div class="relative w-full">
+      <select id="model" 
+        class="appearance-none w-full p-2 pr-10 rounded-lg border border-[color:var(--muted)] bg-[color:var(--panel)] text-[color:var(--fg)] focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] transition-colors duration-200 hover:border-[color:var(--accent)] cursor-pointer"
+      >
+        <option value="default">Default</option>
+        <option value="ui">UI</option>
+      </select>
+      <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+        <i class="fa-solid fa-chevron-down text-[color:var(--fg)]/60"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create button -->
+  <div>
+    <button 
+      id="dialog-btn" 
+      class="w-full md:w-auto btn-compact bg-[color:var(--fg)] text-[color:var(--bg)] hover:bg-[color:var(--accent)] hover:text-white transition-all duration-200 rounded-lg px-4 py-2 font-semibold shadow-md hover:shadow-lg"
+      onclick="createPalette()"
+    >
+      <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Create palette
+    </button>
+  </div>
+</div>
+
+
+        <div id="createdPalette" class="md:col-span-2 palette-card equal-h">
+          <div class="body">
+            <p class="text-sm text-[color:var(--fg)]/80">No created palette yet. Create one using the form.</p>
+          </div>
+          <div class="footer">
+            <div class="text-xs text-[color:var(--fg)]/70">Generated palettes are temporary in this demo.</div>
+            <div class="flex gap-2">
+              <button class="btn-compact glass" onclick="downloadPaletteAsJSON()">Export JSON</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK -->
+    <section id="random-page" class="mb-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Quick — Random palettes</h2>
+        <div>
+          <button id="generate-random-btn" class="btn-compact bg-[color:var(--fg)] text-[color:var(--bg)] no-wrap" onclick="getQuickPallete(this)"><i class="fa-solid fa-rotate"></i> Generate</button>
+        </div>
+      </div>
+
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="palette-card p-3">
+          <div id="quickLarge" class="flex gap-3 w-full h-36 items-stretch"></div>
+        </div>
+
+        <div class="glass p-4 rounded-xl">
+          <p class="text-sm">Preview fast palettes here. Click a tile to copy the hex; export if you like a result.</p>
+          <div class="mt-4 flex gap-2">
+            <button class="btn-compact glass" onclick="downloadPaletteAsJSON()">Export JSON</button>
+            <button class="btn-compact glass" onclick="downloadPaletteAsASE()">ASE</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPLORE -->
+    <section id="explore-page" class="mb-12">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Explore</h2>
+        <div class="flex gap-2">
+          <button id="load-more-btn" class="btn-compact bg-[color:var(--fg)] text-[color:var(--bg)] no-wrap" onclick="loadExpPalletes(this)">Generate set</button>
+          <button class="btn-compact glass no-wrap" onclick="shuffleExplore()">Shuffle</button>
+        </div>
+      </div>
+
+      <div id="palletes-holder" class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="mb-12">
+      <h3 class="text-base font-semibold">About</h3>
+      <p class="mt-2 text-sm text-[color:var(--fg)]/80 max-w-2xl">This rebuild focuses on stability, a premium muted palette, and a working infinite showcase. I kept the default 5-color palettes and Tailwind CDN as requested.</p>
+    </section>
+  </main>
+
+  <!-- Toast -->
   <div id="toast" aria-live="polite"><div class="bubble">Copied</div></div>
 
-  <!-- vanta + three -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.dots.min.js"></script>
-
-  <!-- App JS -->
+  <!-- Script: keep everything simple and robust -->
   <script>
   /* ======= DOM refs ======= */
-  const palletesHolder = document.getElementById("palletes-holder");
-  const modelSelect = document.getElementById("model");
-  const baseColor = document.getElementById("base-color");
-  const createdPalette = document.getElementById("createdPalette");
-  const dialogBtn = document.getElementById("dialog-btn");
-  const generateRandomBtn = document.getElementById("generate-random-btn");
-  const quickPalette = document.getElementById("quickPalette");
-  const quickPaletteLarge = document.getElementById("quickPaletteLarge");
-  const loadMoreBtn = document.getElementById("load-more-btn");
-  const toast = document.getElementById("toast");
+  const showcaseTrack = document.getElementById('showcase-track');
+  const quickLarge = document.getElementById('quickLarge');
+  const createdPalette = document.getElementById('createdPalette');
+  const palletesHolder = document.getElementById('palletes-holder');
+  const generateRandomBtn = document.getElementById('generate-random-btn');
+  const loadMoreBtn = document.getElementById('load-more-btn');
+  const dialogBtn = document.getElementById('dialog-btn');
+  const toast = document.getElementById('toast');
 
   const hexvalues = "0123456789ABCDEF".split("");
 
-  /* ======= color helpers ======= */
+  /* ======= util: hex <-> rgb helpers (kept logical) ======= */
   function hexArrFromStr(h){
-    const s = h.replace("#","");
+    const s = h.replace('#','');
     return [ parseInt(s.slice(0,2),16), parseInt(s.slice(2,4),16), parseInt(s.slice(4,6),16) ];
   }
   function rgbFromArr(a){
-    return "#" + a.map(v => {
+    return '#' + a.map(v => {
       const hi = Math.floor(v/16), lo = v - hi*16;
-      return hexvalues[hi]+hexvalues[lo];
-    }).join("");
+      return hexvalues[hi] + hexvalues[lo];
+    }).join('');
   }
 
-  /* ======= small ui ======= */
-  function showToast(msg="Copied"){
-    toast.querySelector(".bubble").textContent = msg;
-    toast.style.display = "block";
-    toast.style.opacity = "1";
-    setTimeout(()=>{ toast.style.opacity = "0"; setTimeout(()=> toast.style.display="none",220); },1400);
+  /* ======= toast ======= */
+  function showToast(msg='Copied'){
+    toast.querySelector('.bubble').textContent = msg;
+    toast.style.display = 'block';
+    toast.style.opacity = '1';
+    setTimeout(()=>{ toast.style.opacity = '0'; setTimeout(()=> toast.style.display='none',220); },1400);
   }
 
+  /* ======= copy ======= */
   function copyToClipboard(txt){
-    navigator.clipboard.writeText(txt).then(()=> showToast("Copied: " + txt)).catch(()=> showToast("Could not copy"));
+    navigator.clipboard.writeText(txt).then(()=> showToast(txt)).catch(()=> showToast('Could not copy'));
   }
 
   /* ======= tile factory ======= */
-  function makeTile(hexColor){
-    const btn = document.createElement("button");
-    btn.className = "tile flex-1";
-    btn.style.background = hexColor;
-    btn.style.minWidth = "64px";
-    btn.setAttribute("aria-label", "Color " + hexColor);
-    btn.setAttribute("tabindex","0");
+  function makeTile(hexColor, height='64px'){
+  const btn = document.createElement('button');
+  btn.className = 'tile relative group';
+  btn.style.background = hexColor;
+  btn.style.height = height;
+  btn.style.flex = '1 1 0%';
+  btn.setAttribute('aria-label', 'Color ' + hexColor);
+  btn.tabIndex = 0;
 
-    // overlay
-    const overlay = document.createElement("div");
-    overlay.className = "tile-overlay";
-    overlay.innerHTML = `<div class="hex-pill">${hexColor.toUpperCase()}</div>
-                         <button class="copy-btn ml-2" title="Copy hex" aria-label="Copy hex"><i class="fa-regular fa-copy"></i></button>`;
-    overlay.querySelector(".copy-btn").addEventListener("click", (e)=>{
-      e.stopPropagation();
-      copyToClipboard(hexColor.toUpperCase());
-    });
+  // Tooltip
+  const tooltip = document.createElement('span');
+  tooltip.className = 'absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-[color:var(--fg)] text-[color:var(--bg)] text-xs rounded opacity-0 transition-opacity duration-300 pointer-events-none z-50';
+  tooltip.textContent = hexColor.toUpperCase();
+  btn.appendChild(tooltip);
 
-    // main click copies
-    btn.addEventListener("click", ()=> { copyToClipboard(hexColor.toUpperCase()); btn.animate([{transform:"scale(1.03)"},{transform:"scale(1)"}],{duration:160}); });
+  // Hover for desktop
+  btn.addEventListener('mouseenter', ()=> tooltip.style.opacity = '1');
+  btn.addEventListener('mouseleave', ()=> tooltip.style.opacity = '0');
 
-    // keyboard copy on Enter
-    btn.addEventListener("keydown", (e)=> { if(e.key === "Enter") btn.click(); });
+  // Tap for mobile
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const isVisible = tooltip.style.opacity === '1';
+    tooltip.style.opacity = isVisible ? '0' : '1';
+    copyToClipboard(hexColor.toUpperCase());
+    btn.animate([{transform:'scale(1.05)'},{transform:'scale(1)'}], {duration:120});
+  });
 
-    btn.appendChild(overlay);
-    return btn;
-  }
+  // Close tooltip if click outside
+  document.addEventListener('click', ()=> tooltip.style.opacity = '0');
 
-  /* ======= render palette into container ======= */
-  function renderPalette(container, arr){
-    container.innerHTML = "";
-    arr.forEach(a => {
-      const hex = rgbFromArr(a);
-      const tile = makeTile(hex);
-      tile.style.flex = "1 1 0%";
-      container.appendChild(tile);
-    });
-  }
+  btn.addEventListener('keydown', (e)=> { if(e.key === 'Enter') btn.click(); });
 
-  /* ======= explore card generator (rounded tiles row + meta) ======= */
-  function createExploreCard(arr){
-    const wrapper = document.createElement("div");
-    wrapper.className = "palette-card glass p-3 flex flex-col gap-3";
+  return btn;
+}
 
-    const strip = document.createElement("div");
-    strip.className = "flex gap-3";
-    arr.forEach(a => {
-      const hex = rgbFromArr(a);
-      const t = makeTile(hex);
-      t.style.flex = "1 1 0%";
-      t.style.height = "64px";
-      strip.appendChild(t);
-    });
 
-    const bottom = document.createElement("div");
-    bottom.className = "flex items-center justify-between";
-    const meta = document.createElement("span");
-    meta.className = "text-xs text-[color:var(--fg-dark)]/70";
-    meta.textContent = "Model: " + (Math.random() > .5 ? "ui" : "default");
-    const actions = document.createElement("div");
-    actions.className = "flex gap-2";
-    const copyBtn = document.createElement("button");
-    copyBtn.className = "px-3 py-1 rounded-md glass text-xs";
-    copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
-    copyBtn.title = "Copy palette";
-    copyBtn.addEventListener("click", ()=> copyToClipboard(arr.map(a=>rgbFromArr(a)).join(", ")));
-    const dlBtn = document.createElement("button");
-    dlBtn.className = "px-3 py-1 rounded-md bg-[color:var(--fg-dark)] text-[color:var(--bg-dark)] text-xs";
-    dlBtn.innerHTML = '<i class="fa-solid fa-download"></i>';
-    dlBtn.title = "Download JSON";
-    dlBtn.addEventListener("click", ()=> {
-      const data = JSON.stringify(arr.map(a=>rgbFromArr(a)), null, 2);
-      const blob = new Blob([data], {type: "application/json"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = `palettr-${Date.now()}.json`; a.click();
-      URL.revokeObjectURL(url);
-    });
 
-    actions.appendChild(copyBtn);
-    actions.appendChild(dlBtn);
-    bottom.appendChild(meta);
-    bottom.appendChild(actions);
-
-    wrapper.appendChild(strip);
-    wrapper.appendChild(bottom);
-
-    return wrapper;
-  }
-
-  /* ======= network & API helpers ======= */
-  function randomModel(){ return Math.random() > .5 ? "ui" : "default"; }
-  async function postColormind(body){
-    const res = await fetch("https://colormind-proxy.onrender.com/colormind", {
-      method:"POST", headers: { "Content-Type":"application/json" }, body: JSON.stringify(body)
-    });
-    return res.json();
-  }
-
-  async function getQuickPallete(btn){
+  /* ======= fetch helper ======= */
+  async function fetchPalette(model=null, base=null){
     try {
-      btn.setAttribute("disabled", true);
-      btn.querySelector("i")?.classList?.add("fa-spin");
-      const data = await postColormind({ model: randomModel(), input: ["N","N","N","N","N"] });
-      if(data && data.result) {
-        renderPalette(quickPalette, data.result);
-        renderPalette(quickPaletteLarge, data.result);
-      } else showToast("No result");
-    } catch(e){ console.warn(e); showToast("Network error"); }
-    finally { btn.removeAttribute("disabled"); btn.querySelector("i")?.classList?.remove("fa-spin"); }
+      const body = model ? { model, input: base ? [ hexArrFromStr(base), 'N','N','N','N' ] : ["N","N","N","N","N"] }
+                         : { model: (Math.random()>0.5 ? 'ui' : 'default'), input: ["N","N","N","N","N"] };
+      const resp = await fetch('https://colormind-proxy.onrender.com/colormind', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await resp.json();
+      return data?.result || null;
+    } catch(err){
+      console.warn('fetch fail', err);
+      return null;
+    }
+  }
+function pushPanel(arr){
+  const panel = document.createElement('div');
+  panel.className = 'panel';
+  panel.style.position = 'absolute';
+  panel.style.width = '100%';
+  panel.style.top = '0';
+  panel.style.left = '0';
+  panel.style.display = 'flex';
+  panel.style.gap = '12px';
+  panel.style.opacity = '0';
+
+  // create swatches
+  arr.forEach((a, i) => {
+    const s = document.createElement('div');
+    s.className = 'swatch';
+    s.style.background = rgbFromArr(a);
+    s.style.opacity = '0';
+    s.style.transform = 'translateY(20px)';
+    panel.appendChild(s);
+  });
+
+  showcaseTrack.appendChild(panel);
+
+  // Animate old panels up & fade out
+  Array.from(showcaseTrack.children).forEach(oldPanel => {
+    if(oldPanel !== panel){
+      Array.from(oldPanel.children).forEach((s, idx) => {
+        setTimeout(() => {
+          s.style.transition = 'transform 0.8s ease, opacity 0.8s ease';
+          s.style.transform = 'translateY(-30px)';
+          s.style.opacity = '0';
+        }, idx * 100); // stagger old swatches
+      });
+
+      // remove old panel after animation
+      setTimeout(() => oldPanel.remove(), 1000);
+    }
+  });
+
+  // Animate new panel in from bottom
+  Array.from(panel.children).forEach((s, idx) => {
+    setTimeout(() => {
+      s.style.transition = 'transform 0.8s ease, opacity 0.8s ease';
+      s.style.transform = 'translateY(0)';
+      s.style.opacity = '1';
+    }, idx * 150); // stagger new swatches
+  });
+
+  panel.style.opacity = '1';
+}
+  
+ 
+ 
+ 
+ 
+  /* ======= Showcase: stable infinite loop implementation ======= */
+const SHOWCASE_INTERVAL = 4000;  
+let showcaseIntervalId = null; 
+
+async function startShowcaseLoop(){
+  if(showcaseIntervalId) clearInterval(showcaseIntervalId);
+
+  async function pushNext(){
+    const next = await fetchPalette();
+    if(next) pushPanel(next);
+  }
+
+  pushNext(); // first panel
+  showcaseIntervalId = setInterval(pushNext, SHOWCASE_INTERVAL);
+}
+
+
+  /* ======= Quick / Create / Explore logic ======= */
+  async function getQuickPallete(btn){
+    btn.setAttribute('disabled', true);
+    btn.querySelector('i')?.classList?.add('fa-spin');
+    try {
+      const p = await fetchPalette();
+      if(p){
+        quickLarge.innerHTML = '';
+        p.forEach(a => { quickLarge.appendChild(makeTile(rgbFromArr(a), '100%')); });
+        pushPanel(p); // keep showcase in sync visually
+      } else showToast('No result');
+    } catch(e){ showToast('Network error'); }
+    finally { btn.removeAttribute('disabled'); btn.querySelector('i')?.classList?.remove('fa-spin'); }
   }
 
   async function createPalette(){
+    dialogBtn.setAttribute('disabled', true);
+    dialogBtn.textContent = 'Creating...';
     try {
-      dialogBtn.setAttribute("disabled", true);
-      dialogBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-      const model = modelSelect.value;
-      const data = await postColormind({ model, input: [ hexArrFromStr(baseColor.value), "N","N","N","N" ] });
-      if(data && data.result) {
-        renderPalette(createdPalette, data.result);
-        showToast("Palette created");
-      } else showToast("No result");
-    } catch(e){ console.warn(e); showToast("Create failed"); }
-    finally { dialogBtn.removeAttribute("disabled"); dialogBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Create'; }
+      const model = document.getElementById('model').value;
+      const base = document.getElementById('base-color').value;
+      const p = await fetchPalette(model, base);
+      if(p){
+        const body = createdPalette.querySelector('.body') || createdPalette;
+        body.innerHTML = '';
+        const strip = document.createElement('div'); strip.className = 'flex gap-3 w-full';
+        p.forEach(a => { const t = makeTile(rgbFromArr(a), '72px'); strip.appendChild(t); });
+        body.appendChild(strip);
+        showToast('Palette created');
+      } else showToast('No result');
+    } catch(e){ showToast('Create failed'); }
+    finally { dialogBtn.removeAttribute('disabled'); dialogBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Create palette'; }
   }
 
   async function loadExpPalletes(btn){
+    btn.setAttribute('disabled', true);
+    btn.textContent = 'Loading...';
     try {
-      btn.setAttribute("disabled", true);
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
       const sets = [];
-      for(let i=0;i<6;i++){
-        try { const data = await postColormind({ model: randomModel(), input:["N","N","N","N","N"] }); if(data && data.result) sets.push(data.result); } catch(e){}
+      for(let i=0;i<8;i++){
+        const s = await fetchPalette();
+        if(s) sets.push(s);
+        await new Promise(r => setTimeout(r, 90));
       }
-      palletesHolder.innerHTML = "";
-      sets.forEach(s => palletesHolder.appendChild(createExploreCard(s)));
-      btn.textContent = "Generate set";
-    } finally { btn.removeAttribute("disabled"); }
+      palletesHolder.innerHTML = '';
+      sets.forEach(s => {
+        const card = document.createElement('div'); card.className = 'palette-card';
+        const sw = document.createElement('div'); sw.className = 'card-swatches'; sw.style.display='flex';
+        s.forEach(a => { const t = makeTile(rgbFromArr(a), '64px'); t.style.flex='1 1 0%'; sw.appendChild(t); });
+        const meta = document.createElement('div'); meta.className = 'flex items-center justify-between mt-2';
+        const tag = document.createElement('div'); tag.className = 'text-xs text-[color:var(--fg)]/70'; tag.textContent = 'Curated';
+        const actions = document.createElement('div'); actions.className = 'flex gap-2';
+        const copyBtn = document.createElement('button'); copyBtn.className = 'btn-compact glass text-xs'; copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+        copyBtn.addEventListener('click', ()=> copyToClipboard(s.map(a => rgbFromArr(a)).join(', ')));
+        const remixBtn = document.createElement('button'); remixBtn.className = 'btn-compact bg-[color:var(--fg)] text-[color:var(--bg)] text-xs'; remixBtn.textContent = 'Remix';
+        remixBtn.addEventListener('click', async ()=> {
+          remixBtn.setAttribute('disabled', true);
+          remixBtn.textContent = 'Remixing...';
+          const newp = await fetchPalette();
+          if(newp){ sw.innerHTML=''; newp.forEach(a => { const t = makeTile(rgbFromArr(a), '64px'); t.style.flex='1 1 0%'; sw.appendChild(t); }); showToast('Remixed'); }
+          remixBtn.removeAttribute('disabled'); remixBtn.textContent = 'Remix';
+        });
+        actions.appendChild(copyBtn); actions.appendChild(remixBtn);
+        meta.appendChild(tag); meta.appendChild(actions);
+        card.appendChild(sw); card.appendChild(meta);
+        palletesHolder.appendChild(card);
+      });
+    } catch(e){ showToast('Load failed'); }
+    finally { btn.removeAttribute('disabled'); btn.textContent = 'Generate set'; }
   }
 
-  // export helpers
+  function shuffleExplore(){
+    const cards = Array.from(palletesHolder.children);
+    for(let i=cards.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      palletesHolder.appendChild(cards[j]);
+      cards.splice(j,1);
+    }
+    showToast('Shuffled');
+  }
+
+  /* ======= exports ======= */
   function downloadPaletteAsJSON(){
-    const sw = Array.from(quickPaletteLarge.children).map(el => el.querySelector(".hex-pill")?.textContent || el.textContent);
-    const data = JSON.stringify(sw, null, 2);
-    const blob = new Blob([data], {type:"application/json"});
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `palettr-${Date.now()}.json`; a.click();
-    showToast("Exported JSON");
+    const sw = Array.from(quickLarge.children).map(c => c.querySelector('.copy-pill')?.textContent || '');
+    const blob = new Blob([JSON.stringify(sw, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `palettr-${Date.now()}.json`; a.click();
+    showToast('Exported JSON');
   }
-  function downloadPaletteAsASE(){
-    // ASE binary is complex; provide JSON fallback and note it
-    downloadPaletteAsJSON();
-    showToast("ASE export fallback (JSON)");
-  }
+  function downloadPaletteAsASE(){ downloadPaletteAsJSON(); showToast('ASE fallback'); }
 
-  /* ======= color conversion helper (string -> [r,g,b]) ======= */
-  function hexArrFromStr(h){
-    const s = h.replace("#","");
-    return [ parseInt(s.slice(0,2),16), parseInt(s.slice(2,4),16), parseInt(s.slice(4,6),16) ];
+  /* ======= nav helpers ======= */
+  function navClick(btn){
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    btn.classList.add('active');
+    const target = btn.dataset.href;
+    if(target) document.querySelector(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
-  function rgbFromArr(a){
-    return "#" + a.map(v => {
-      const hi = Math.floor(v/16), lo = v - hi*16;
-      return hexvalues[hi]+hexvalues[lo];
-    }).join("");
-  }
+  function mobileNav(target){ document.querySelector(target)?.scrollIntoView({ behavior:'smooth', block: 'start' }); }
 
-  /* ======= Vanta init (background) ======= */
-  if(window.VANTA && VANTA.DOTS){
-    VANTA.DOTS({
-      el: "#vanta-anchor", mouseControls:true, touchControls:true, gyroControls:false,
-      minHeight:200.0, minWidth:200.0, scale:1.0, scaleMobile:1.0, color: 0x20a7ff, color2: 0x80d0ff, showLines:false
-    });
-  } else {
-    setTimeout(()=>{ if(window.VANTA && VANTA.DOTS) VANTA.DOTS({ el:"#vanta-anchor", mouseControls:true, touchControls:true, color:0x20a7ff, color2:0x80d0ff, showLines:false }); }, 600);
-  }
+  function scrollTo(id){ document.querySelector(id)?.scrollIntoView({ behavior:'smooth' }); }
 
-  /* ======= init calls ======= */
-  getQuickPallete(generateRandomBtn);
-  loadExpPalletes(loadMoreBtn);
-
-  /* ======= theme toggle (exposed) ======= */
   function toggleTheme(btn){
-    document.body.classList.toggle("light");
-    const i = btn.querySelector("i"); if(!i) return;
-    i.classList.toggle("fa-moon"); i.classList.toggle("fa-sun");
+    document.body.classList.toggle('light');
+    const i = btn.querySelector('i'); if(i) i.classList.toggle('fa-moon'), i.classList.toggle('fa-sun');
   }
-  window.toggleTheme = toggleTheme;
 
-  /* ======= small utilities exposed for inline buttons ======= */
+  /* ======= init ======= */
+ (async function init(){
+  try {
+    // populate quickLarge and first showcase panel
+    const p = await fetchPalette();
+    if(p){
+      pushPanel(p);
+      quickLarge.innerHTML = '';
+      p.forEach(a => { quickLarge.appendChild(makeTile(rgbFromArr(a), '100%')); });
+    }
+    
+    // start infinite showcase loop
+    startShowcaseLoop();
+
+    // load explore section
+    loadExpPalletes(loadMoreBtn);
+  } catch(e){ console.warn(e); }
+})();
+
+
+  /* Expose needed functions for inline buttons */
   window.getQuickPallete = getQuickPallete;
   window.createPalette = createPalette;
   window.loadExpPalletes = loadExpPalletes;
   window.downloadPaletteAsJSON = downloadPaletteAsJSON;
   window.downloadPaletteAsASE = downloadPaletteAsASE;
-
-  /* ======= goPage for nav anchors ======= */
-  window.goPage = function(el){
-    document.querySelectorAll(".nav-link").forEach(a=>a.classList.remove("active"));
-    el.classList.add("active");
-    const href = el.getAttribute("href");
-    if(href && href.startsWith("#")) document.querySelector(href)?.scrollIntoView({behavior:"smooth", block:"start"});
-  };
-
-  // keyboard escape hides toast quickly
-  document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") toast.style.display="none"; });
-
+  window.shuffleExplore = shuffleExplore;
+  window.navClick = navClick;
+  window.mobileNav = mobileNav;
+  window.scrollTo = scrollTo;
+ 
   </script>
 </body>
 </html>
